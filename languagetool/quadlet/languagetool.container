@@ -1,0 +1,16 @@
+ [Unit]
+ Description=Podman languagetool.service
+
+ [Service]
+ Restart=on-failure
+ TimeoutStartSec=900
+
+ [Container]
+ Image=localhost/languagetool:latest
+ AutoUpdate=registry
+ UserNS=keep-id:uid=1000,gid=1000
+ Volume=%h/.config/languagetool/server.config:/opt/LanguageTool/server.config:Z
+ Volume=%h/.config/languagetool/ngram-data:/opt/LanguageTool/ngram-data:Z
+ 
+ [Install]
+ WantedBy=default.target

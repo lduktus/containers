@@ -1,0 +1,27 @@
+FROM cgr.dev/chainguard/wolfi-base:latest AS build
+
+# NOTE: fasttext has been deprecated
+# SEE: https://github.com/languagetool-org/languagetool/issues/10522
+RUN set -euxo pipefail && apk add --no-cache wget unzip git make gcc build-base \
+        && wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 5 https://languagetool.org/download/LanguageTool-stable.zip \
+        && unzip LanguageTool-stable.zip -d /tmp \
+        && rm -f LanguageTool-stable.zip \
+        && wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 5 https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin -O /tmp/lid.176.bin \
+        && git clone https://github.com/facebookresearch/fastText.git /tmp/fasttext \
+        && cd /tmp/fasttext \
+        && make \
+        && rm -rf /tmp/fasttext/.git
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+RUN set -euxo pipefail && apk add --no-cache openjdk-21-jre-base libstdc++ \
+        && ln -svf /usr/lib/jvm/java-21-openjdk /usr/lib/jvm/default-jvm \
+        && mkdir -p /opt/LanguageTool /opt/LanguageTool/ngram-data \
+        && chown -R nonroot:nonroot /opt/LanguageTool
+COPY --from=build --chown=nonroot:nonroot /tmp/LanguageTool-* /opt/LanguageTool
+COPY --from=build --chown=nonroot:nonroot /tmp/lid.176.bin /opt/LanguageTool/fastTextData/
+COPY --from=build --chown=nonroot:nonroot /tmp/fasttext/fasttext /opt/LanguageTool/fastText/
+COPY --chmod=0755 ./lt-server.sh /usr/local/bin/lt-server
+COPY --chown=nonroot:nonroot ./server.config /opt/LanguageTool/server.config
+USER nonroot
+ENV LT_PORT=8081
+ENTRYPOINT ["/usr/local/bin/lt-server"]

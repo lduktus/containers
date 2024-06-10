@@ -1,0 +1,19 @@
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+ARG REFINE_VERSION=3.8.1
+ARG OPEN_JDK_VERSION=21
+WORKDIR /opt
+RUN apk add --no-cache bash curl wget openjdk-$OPEN_JDK_VERSION-jre-base \
+        && ln -svf /usr/lib/jvm/java-21-openjdk /usr/lib/jvm/default-jvm \
+        && wget --retry-connrefused \
+                --waitretry=1 \
+                --read-timeout=20 \
+                --timeout=15 -t 5 \
+                https://github.com/OpenRefine/OpenRefine/releases/download/$REFINE_VERSION/openrefine-linux-$REFINE_VERSION.tar.gz \
+        && tar zxf openrefine-linux-$REFINE_VERSION.tar.gz \
+        && rm -rf openrefine-linux-$REFINE_VERSION.tar.gz \
+        && mv -v openrefine-$REFINE_VERSION openrefine \
+        && chown -R nonroot:nonroot /opt/openrefine
+USER nonroot
+WORKDIR /workspace
+ENTRYPOINT ["/opt/openrefine/refine"]

@@ -1,0 +1,18 @@
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+
+WORKDIR /build
+RUN apk add --no-cache go git curl jq \
+        && latest_release=$(curl -s https://api.github.com/repos/syncthing/syncthing/releases/latest | jq -r .tag_name) \
+        && git clone --depth 1 --branch $latest_release https://github.com/syncthing/syncthing.git . \
+        && go run build.go
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+RUN apk add --no-cache ca-certificates curl libcap su-exec tzdata \
+        && mkdir -pv /home/nonroot/.local/bin \
+        && chown -R nonroot:nonroot /home/nonroot/.local/bin
+COPY --from=builder --chown=nonroot:nonroot /build/bin/syncthing /home/nonroot/.local/bin
+USER nonroot
+# SEE: https://docs.syncthing.net/users/config.html
+ENV STHOMEDIR=/home/nonroot/.config STGUIADDRESS=0.0.0.0:8384
+EXPOSE 8384 22000/tcp 22000/udp 21027/udp
+ENTRYPOINT ["/home/nonroot/.local/bin/syncthing"]
