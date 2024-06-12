@@ -6,28 +6,30 @@ on:
   schedule:
     # Biweekly on Friday night
     - cron: '0 0 */14 * *'
-
+permissions:
+  contents: read
+  packages: write
 jobs:
   build_svc_languagetool:
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
-      context: ./svc-languagetool
+      context: svc-languagetool
       image_name: svc-languagetool
 
   build_svc_openrefine:
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
-      context: ./svc-openrefine
+      context: svc-openrefine
       image_name: svc-openrefine
 
   build_box_qgis:
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
-      context: ./box-qgis
+      context: box-qgis
       image_name: box-qgis
 
   build_box_zotero:
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
-      context: ./box-zotero
+      context: box-zotero
       image_name: box-zotero
