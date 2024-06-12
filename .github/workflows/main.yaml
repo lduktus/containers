@@ -6,31 +6,28 @@ on:
   schedule:
     # Biweekly on Friday night
     - cron: '0 0 */14 * *'
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.event.repository.name }}
 
 jobs:
   build_svc_languagetool:
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       context: ./svc-languagetool
-      image_name: ${{ env.IMAGE_NAME }}-svc-languagetool
+      image_name: svc-languagetool
 
   build_svc_openrefine:
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       context: ./svc-openrefine
-      image_name: ${{ env.IMAGE_NAME }}-svc-openrefine
+      image_name: svc-openrefine
 
   build_box_qgis:
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       context: ./box-qgis
-      image_name: ${{ env.IMAGE_NAME }}-box-qgis
+      image_name: box-qgis
 
   build_box_zotero:
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       context: ./box-zotero
-      image_name: ${{ env.IMAGE_NAME }}-box-zotero
+      image_name: box-zotero
