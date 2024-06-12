@@ -1,0 +1,17 @@
+ARG VERSION=22.04
+FROM quay.io/toolbx-images/ubuntu-toolbox:$VERSION
+LABEL com.github.containers.toolbox="true" \
+    name="qgis-box" \
+    usage="This image is meant to be used with the toolbox or distrobox command" \
+    summary="Containerized gis envrionment with QGIS" \
+    maintainer="duktus@mdnh.xyz"
+
+RUN DEBIAN_FRONTEND=noninteractive \
+        wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 5 \
+        -O /usr/share/keyrings/qgis-archive-keyring.gpg https://download.qgis.org/downloads/qgis-archive-keyring.gpg \
+            && chmod 644 /usr/share/keyrings/qgis-archive-keyring.gpg \
+            && echo "deb [signed-by=/usr/share/keyrings/qgis-archive-keyring.gpg] https://qgis.org/debian $(lsb_release -cs) main" > /etc/apt/sources.list.d/qgis.list \
+            && apt-get update -qq \
+            && apt-get install -y qgis qgis-plugin-grass qtwayland5 \
+            && apt-get autoremove -y \
+            && apt-get autoclean

@@ -1,0 +1,15 @@
+ARG VERSION=22.04
+FROM quay.io/toolbx/ubuntu-toolbox:$VERSION
+LABEL com.github.containers.toolbox="true" \
+    name="zotero-box" \
+    usage="This image is meant to be used with the toolbox or distrobox command" \
+    summary="Containerized reference management with Zotero" \
+    maintainer="duktus@mdnh.xyz"
+
+RUN DEBIAN_FRONTEND=noninteractive \
+    curl -L https://raw.githubusercontent.com/retorquere/zotero-deb/master/zotero-archive-keyring.gpg -o /usr/share/keyrings/zotero-archive-keyring.gpg \
+        && chmod 644 /usr/share/keyrings/zotero-archive-keyring.gpg \
+        && echo "deb [signed-by=/usr/share/keyrings/zotero-archive-keyring.gpg by-hash=force] https://zotero.retorque.re/file/apt-package-archive ./" > /etc/apt/sources.list.d/zotero.list \
+        && apt update \
+        && apt upgrade -y \
+        && apt install -y zotero-beta ocrmypdf tesseract-ocr tesseract-ocr-all poppler-utils
