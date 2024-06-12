@@ -12,25 +12,25 @@ env:
 
 jobs:
   build_svc_languagetool:
-    uses: ./.github/workflows/reusable-workflow.yml
+    uses: ./.github/workflows/reusable-workflow.yaml
     with:
       context: ./svc-languagetool
       image_name: ${{ env.IMAGE_NAME }}-svc-languagetool
 
   build_svc_openrefine:
-    uses: ./.github/workflows/reusable-workflow.yml
+    uses: ./.github/workflows/reusable-workflow.yaml
     with:
       context: ./svc-openrefine
       image_name: ${{ env.IMAGE_NAME }}-svc-openrefine
 
   build_box_qgis:
-    uses: ./.github/workflows/reusable-workflow.yml
+    uses: ./.github/workflows/reusable-workflow.yaml
     with:
       context: ./box-qgis
       image_name: ${{ env.IMAGE_NAME }}-box-qgis
 
   build_box_zotero:
-    uses: ./.github/workflows/reusable-workflow.yml
+    uses: ./.github/workflows/reusable-workflow.yaml
     with:
       context: ./box-zotero
       image_name: ${{ env.IMAGE_NAME }}-box-zotero
