@@ -26,11 +26,11 @@ jobs:
         with:
           image: ${{ inputs.image_name }}
           tags: latest ${{ github.sha }}
-          context: ${{ inputs.context }}
+          # context: ${{ inputs.context }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           containerfiles: |
-            Containerfile
+            ${{ inputs.context }}/Containerfile
       - name: Push To Registry
         id: push-image
         uses: redhat-actions/push-to-registry@v2.8
