@@ -22,6 +22,12 @@ jobs:
       context: ./svc-openrefine
       image_name: svc-openrefine
 
+  build_box_syncthing:
+    uses: ./.github/workflows/reusable-workflow.yaml
+    with:
+      context: ./box-syncthing
+      image_name: box-syncthing
+
   build_box_qgis:
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
