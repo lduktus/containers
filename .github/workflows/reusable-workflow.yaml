@@ -19,7 +19,7 @@ jobs:
       REGISTRY: ghcr.io
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Build Image
         id: build-image
         uses: redhat-actions/buildah-build@v2.13
